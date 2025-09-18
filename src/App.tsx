@@ -4,12 +4,13 @@ import { motion } from "framer-motion";
 
 const projectTags: Record<string, string[]> = {
   "api-controle-visitantes": ["Node", "MongoDB", "REST", "Express", "Mongoose"],
+  "agendamento_academia_minimalapi": ["Minimal API", "SQLite", ".NET 8", "xUnit", "Swagger"],
   "app-travels": ["Java", "SQLite", "Retrofit", "Mobile"],
   "comparador_sequecial_vs_paralelo": ["Java 17+", "Multithreading", "ForkJoinPool"],
-  "compilador": ["C#", ".NET 8.0"],
-  "grpc_agendamento_docker": ["C#", ".NET 8.0", "gRPC", "Docker"],
+  "compilador": ["C#", ".NET 8"],
+  "grpc_agendamento_docker": ["C#", ".NET 8", "gRPC", "Docker"],
   "dijkstra-caminho-mais-barato": ["Node", "Dijkstra"],
-  "poc-gestao-saude-idosos": ["C#", ".NET 8.0", "PostgreSQL", "API RESTful", "Razor", "Google Charts", "DDD", "MVC"],
+  "poc-gestao-saude-idosos": ["C#", ".NET 8", "PostgreSQL", "API RESTful", "Razor", "Google Charts", "DDD", "MVC"],
   "portfolio-guijosegon": ["React", "TypeScript", "Vite", "Tailwind CSS", "Framer Motion"],
   "site-institucional": ["React", "Node", "Next"]
 };
