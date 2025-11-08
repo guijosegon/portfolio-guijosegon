@@ -134,7 +134,7 @@ const scrollToId = (id) => {
             <img
               src="/perfil.png"
               alt="Foto de Guilherme Gonçalves"
-              className="w-48 h-48 rounded-full border-4 border-black object-cover"
+              className="w-62 h-62 rounded-full object-cover"
             />
           </div>
         </motion.section>
