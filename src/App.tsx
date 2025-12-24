@@ -17,15 +17,15 @@ const projectTags: Record<string, string[]> = {
   "poc-gestao-saude-idosos": ["C#", ".NET 8", "PostgreSQL", "MVC", "Razor", "Dashboards", "Google Charts"],
   "GuiaCompletoScrum": ["Agile", "Scrum", "Processos", "Artigo"],
   "portfolio-guijosegon": ["React", "TypeScript", "Vite", "Tailwind CSS", "Framer Motion"],
-  "grpc_agendamento_docker": ["C#", ".NET 8", "gRPC", "Docker"],
+  "grpc-agendamento-docker": ["C#", ".NET 8", "gRPC", "Docker"],
   "compilador": ["C#", ".NET 8", "Compiladores"],
-  "agendamento_academia_minimalapi": ["Minimal API", ".NET 8", "SQLite", "xUnit", "Swagger"],
+  "agendamento-academia-minimal-api": ["Minimal API", ".NET 8", "SQLite", "xUnit", "Swagger"],
   "api-controle-visitantes": ["Node", "MongoDB", "REST", "Express", "Mongoose"],
   "app-travels": ["Java", "SQLite", "Retrofit", "Mobile"],
-  "comparador_sequecial_vs_paralelo": ["Java 17+", "Multithreading", "ForkJoinPool"],
+  "comparador-sequencial-vs-paralelo": ["Java 17+", "Multithreading", "ForkJoinPool"],
   "dijkstra-caminho-mais-barato": ["Node", "Algoritmos", "Dijkstra"],
   "site-institucional": ["React", "Node", "Next"],
-  "unimotors_springboot_apirest": ["Spring Boot 3", "Java 17", "PostgreSQL", "Flyway"],
+  "unimotors-springboot-api": ["Spring Boot 3", "Java 17", "PostgreSQL", "Flyway"],
 };
 
 const featuredRepoNames = [
@@ -128,6 +128,7 @@ export default function App() {
       (r) =>
         !r.fork &&
         r.name !== "guijosegon" &&
+        r.name !== "guia-completo-scrum" &&
         r.name !== "project-assets"
     );
 
