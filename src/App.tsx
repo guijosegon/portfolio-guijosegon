@@ -18,7 +18,7 @@ const projectTags: Record<string, string[]> = {
   "GuiaCompletoScrum": ["Agile", "Scrum", "Processos", "Artigo"],
   "portfolio-guijosegon": ["React", "TypeScript", "Vite", "Tailwind CSS", "Framer Motion"],
   "grpc-agendamento-docker": ["C#", ".NET 8", "gRPC", "Docker"],
-  "compilador": ["C#", ".NET 8", "Compiladores"],
+  "compilador-didatico-ll1": ["C#", ".NET 8", "Compiladores"],
   "agendamento-academia-minimal-api": ["Minimal API", ".NET 8", "SQLite", "xUnit", "Swagger"],
   "api-controle-visitantes": ["Node", "MongoDB", "REST", "Express", "Mongoose"],
   "app-travels": ["Java", "SQLite", "Retrofit", "Mobile"],
