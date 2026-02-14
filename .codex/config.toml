@@ -1,0 +1,6 @@
+# Configuração local do Codex para permissões máximas neste projeto
+approval_policy = "never"
+sandbox_mode = "danger-full-access"
+
+[sandbox_workspace_write]
+network_access = true

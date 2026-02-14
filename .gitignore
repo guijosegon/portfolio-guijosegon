@@ -6,6 +6,7 @@ npm-debug.log*
 
 # Editor/IDE
 .vscode/
+.codex/
 
 # Arquivos de lock
 package-lock.json
