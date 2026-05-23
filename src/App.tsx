@@ -1,5 +1,6 @@
 import { useEffect, useMemo, useState } from "react";
 import { FaGithub, FaLinkedin, FaEnvelope } from "react-icons/fa";
+import { FiAward, FiCode, FiFolder, FiUser } from "react-icons/fi";
 import { motion } from "framer-motion";
 
 type GithubRepo = {
@@ -47,14 +48,17 @@ const translations: Record<
     projectsIntro: string;
     featuredTitle: string;
     otherReposTitle: string;
+    personalProjectsLabel: string;
     noDescription: string;
     viewOnGithub: string;
     blogTitle: string;
     blogIntro: string;
     blogArticleTitle: string;
     blogArticleText: string;
+    blogArticleMeta: string;
     accessResearch: string;
     footerText: string;
+    footerLocation: string;
     rightsReserved: string;
     fetchError: string;
   }
@@ -69,25 +73,25 @@ const translations: Record<
     themeDark: "🌙 Escuro",
     heroTitle: "Olá, eu sou Guilherme José Gonçalves",
     heroText:
-      "Sou desenvolvedor full stack com foco em .NET e aplicações web. Hoje atuo no LogX (Narwal Sistemas), trabalhando com .NET + PostgreSQL no back-end e React/Next.js no front-end. Gosto de construir soluções simples, bem organizadas e fáceis de evoluir, com atenção a arquitetura, boas validações e entrega contínua (CI/CD).",
+      "Full Stack Developer | .NET, React/Next.js | Arquitetura limpa, APIs escaláveis e automação de entregas | DDD, CQRS, Azure DevOps",
     viewProjects: "Ver Projetos",
     profileAlt: "Foto de Guilherme José Gonçalves",
     aboutTitle: "Sobre mim",
     aboutText:
-      "Trabalho com desenvolvimento web há alguns anos e meu foco é criar software que o time consiga manter e evoluir com tranquilidade. Tenho experiência com APIs e integrações, sustentação em produção e melhorias contínuas no fluxo de entrega. No dia a dia, atuo no LogX com .NET e PostgreSQL (EF Core, CQRS/MediatR e FluentValidation) e também no front com React/Next.js usando React Query, Ant Design e Styled Components. Recentemente, montei um repositório interno de documentação voltado para uso com IA para padronizar decisões e acelerar o onboarding do time.",
+      "Sou Desenvolvedor Full Stack com foco em .NET e produtos web escaláveis, atuando na construção, evolução e sustentação de soluções com atenção a arquitetura, qualidade de código, performance e entrega contínua. Tenho experiência prática no desenvolvimento de APIs e aplicações web com .NET, EF Core, React/Next.js, SQL Server, PostgreSQL e MongoDB, aplicando princípios como Clean Architecture, DDD e CQRS para orientar decisões sustentáveis e manter sistemas mais evolutivos. Também atuo na estruturação de testes unitários, end-to-end e de carga, buscando maior cobertura das regras de negócio, previsibilidade em mudanças e redução de riscos em produção. No ciclo de entrega, trabalho com pipelines de CI/CD no Azure DevOps, automação de builds e deploys, além de práticas de code review e apoio a decisões arquiteturais. Tenho utilizado ferramentas e agentes de IA, como Claude Code e Codex, para apoiar padronização, documentação técnica, revisão de código e ganho de produtividade no desenvolvimento.",
     experienceTitle: "Experiência",
     hardSkillsTitle: "Hard Skills",
     softSkillsTitle: "Soft Skills",
     experienceItems: [
       {
-        companyPeriod: "LogX (Narwal Sistemas) (2025 – Atual)",
+        companyPeriod: "LogX (dez 2025 – atual)",
         description:
-          "Desenvolvedor Full Stack com .NET + PostgreSQL e React/Next.js, seguindo arquitetura por feature, CQRS (MediatR) e validações com FluentValidation, entregando soluções simples (KISS), escaláveis e fáceis de evoluir.",
+          "Atuo no backend com .NET + PostgreSQL e no frontend com React/Next.js, com foco em arquitetura evolutiva, previsibilidade de entregas e qualidade. Entreguei features como SSO, Analytics, Audit Log, rebrand da plataforma, E2E/Load e Webhooks, padronizei validações e fluxo de erros com CQRS/MediatR e FluentValidation, apoiei a documentação interna orientada a IA e contribuí para pipelines e releases no Azure DevOps.",
       },
       {
-        companyPeriod: "Narwal Sistemas (2022 – 2025)",
+        companyPeriod: "Narwal Sistemas (jul 2023 – mai 2026)",
         description:
-          "Desenvolvedor Full Stack e Scrum Master, contribuindo para o desenvolvimento e evolução de soluções do produto, com foco em entrega contínua, qualidade e colaboração entre engenharia e negócio, atuando como referência técnica e apoiando decisões de arquitetura.",
+          "Atuei como Desenvolvedor Full Stack e Scrum Master, contribuindo para a evolução contínua das soluções do produto com foco em estabilidade, qualidade e alinhamento entre engenharia e negócio. Participei da sustentação, evolução funcional e apoio técnico ao time, fortalecendo o fluxo de entrega e a colaboração entre áreas.",
       },
       {
         companyPeriod: "Márcio Bikes (2022)",
@@ -113,19 +117,22 @@ const translations: Record<
     ],
     projectsTitle: "Projetos",
     projectsIntro:
-      "Repositórios públicos do meu GitHub (com alguns destaques alinhados ao que estou trabalhando hoje).",
+      "Projetos pessoais e estudos aplicados que uso para praticar arquitetura, backend, frontend e desenho de APIs.",
     featuredTitle: "Destaques",
-    otherReposTitle: "Outros repositórios",
+    otherReposTitle: "Outros projetos pessoais",
+    personalProjectsLabel: "Projeto pessoal",
     noDescription: "Sem descrição.",
     viewOnGithub: "Ver no GitHub",
     blogTitle: "Blog",
-    blogIntro: "Pesquisas e artigos de estudos realizados:",
+    blogIntro: "Artigos e materiais de estudo publicados para consolidar aprendizados, documentar referências técnicas e registrar práticas que aplico no dia a dia.",
     blogArticleTitle: "Scrum na Prática: Entregando Valor com Agilidade",
     blogArticleText:
-      "Um guia com conceitos, papéis, eventos e boas práticas para aplicar Scrum de forma objetiva no dia a dia.",
+      "Material produzido para organizar conceitos, papéis, cerimônias e práticas do Scrum de forma objetiva, conectando teoria com aplicação prática em times de produto e engenharia.",
+    blogArticleMeta: "Pesquisa autoral • Agile, Scrum, entrega contínua",
     accessResearch: "Acessar pesquisa",
     footerText:
-      "Este é um portfólio pessoal desenvolvido em React + TypeScript com Vite e Tailwind CSS, hospedado no Render. Usado especialmente para aprendizagem e evolução contínua.",
+      "Portfólio pessoal desenvolvido para apresentar experiência, projetos e interesses técnicos com foco em engenharia de software, arquitetura e evolução contínua.",
+    footerLocation: "Criciúma, Santa Catarina, Brasil",
     rightsReserved: "Todos os direitos reservados.",
     fetchError: "Erro ao buscar repositórios:",
   },
@@ -139,25 +146,25 @@ const translations: Record<
     themeDark: "🌙 Dark",
     heroTitle: "Hi, I'm Guilherme José Gonçalves",
     heroText:
-      "I'm a full stack developer focused on .NET and web applications. I currently work at LogX (Narwal Sistemas), building with .NET + PostgreSQL on the back end and React/Next.js on the front end. I like building simple, well-structured, easy-to-evolve solutions with attention to architecture, solid validations, and continuous delivery (CI/CD).",
+      "Full Stack Developer | .NET, React/Next.js | Clean architecture, scalable APIs, and delivery automation | DDD, CQRS, Azure DevOps",
     viewProjects: "View Projects",
     profileAlt: "Photo of Guilherme José Gonçalves",
     aboutTitle: "About me",
     aboutText:
-      "I've been working with web development for a few years, and my focus is to create software that teams can maintain and evolve smoothly. I have experience with APIs and integrations, production support, and continuous improvements in delivery flow. Day to day, I work at LogX with .NET and PostgreSQL (EF Core, CQRS/MediatR, and FluentValidation), and on the front end with React/Next.js using React Query, Ant Design, and Styled Components. Recently, I built an internal documentation repository for AI-assisted workflows to standardize decisions and speed up team onboarding.",
+      "I am a Full Stack Developer focused on .NET and scalable web products, working across the construction, evolution, and support of solutions with attention to architecture, code quality, performance, and continuous delivery. I have hands-on experience building APIs and web applications with .NET, EF Core, React/Next.js, SQL Server, PostgreSQL, and MongoDB, applying principles such as Clean Architecture, DDD, and CQRS to support sustainable decisions and keep systems easier to evolve. I also work on unit, end-to-end, and load testing to increase business-rule coverage, improve change predictability, and reduce production risks. In the delivery cycle, I work with CI/CD pipelines in Azure DevOps, build and deployment automation, code review practices, and architectural decision support. I have been using AI tools and agents, such as Claude Code and Codex, to help with standardization, technical documentation, code review, and engineering productivity.",
     experienceTitle: "Experience",
     hardSkillsTitle: "Hard Skills",
     softSkillsTitle: "Soft Skills",
     experienceItems: [
       {
-        companyPeriod: "LogX (Narwal Sistemas) (2025 – Current)",
+        companyPeriod: "LogX (Dec 2025 – Present)",
         description:
-          "Full Stack Developer with .NET + PostgreSQL and React/Next.js, using feature-based architecture, CQRS (MediatR), and FluentValidation to deliver simple (KISS), scalable, and easy-to-evolve solutions.",
+          "Working on the backend with .NET + PostgreSQL and on the frontend with React/Next.js, focused on evolvable architecture, delivery predictability, and quality. Delivered features such as SSO, Analytics, Audit Log, platform rebrand, E2E/Load and Webhooks, standardized validations and error flow with CQRS/MediatR and FluentValidation, supported AI-oriented internal documentation, and contributed to Azure DevOps pipelines and releases.",
       },
       {
-        companyPeriod: "Narwal Sistemas (2022 – 2025)",
+        companyPeriod: "Narwal Sistemas (Jul 2023 – May 2026)",
         description:
-          "Full Stack Developer and Scrum Master, contributing to product solution development and evolution, focused on continuous delivery, quality, and collaboration between engineering and business, acting as a technical reference and supporting architecture decisions.",
+          "Worked as a Full Stack Developer and Scrum Master, contributing to the continuous evolution of product solutions with a focus on stability, quality, and alignment between engineering and business. Supported production work, functional evolution, and technical collaboration across the team, strengthening delivery flow and cross-functional coordination.",
       },
       {
         companyPeriod: "Márcio Bikes (2022)",
@@ -183,19 +190,22 @@ const translations: Record<
     ],
     projectsTitle: "Projects",
     projectsIntro:
-      "Public repositories from my GitHub (including highlights aligned with what I'm currently building).",
+      "Personal projects and applied studies I use to practice architecture, backend, frontend, and API design.",
     featuredTitle: "Highlights",
-    otherReposTitle: "Other repositories",
+    otherReposTitle: "Other personal projects",
+    personalProjectsLabel: "Personal project",
     noDescription: "No description.",
     viewOnGithub: "View on GitHub",
     blogTitle: "Blog",
-    blogIntro: "Research and study articles:",
+    blogIntro: "Articles and study materials published to consolidate learnings, document technical references, and capture practices I apply in day-to-day engineering work.",
     blogArticleTitle: "Scrum in Practice: Delivering Value with Agility",
     blogArticleText:
-      "A guide with concepts, roles, events, and best practices to apply Scrum objectively in day-to-day work.",
+      "A material created to organize Scrum concepts, roles, ceremonies, and practices in an objective way, connecting theory with practical application in product and engineering teams.",
+    blogArticleMeta: "Original research • Agile, Scrum, continuous delivery",
     accessResearch: "Read research",
     footerText:
-      "This is a personal portfolio built with React + TypeScript using Vite and Tailwind CSS, hosted on Render. Mainly used for learning and continuous improvement.",
+      "Personal portfolio built to present experience, projects, and technical interests with a focus on software engineering, architecture, and continuous improvement.",
+    footerLocation: "Criciuma, Santa Catarina, Brazil",
     rightsReserved: "All rights reserved.",
     fetchError: "Error fetching repositories:",
   },
@@ -209,25 +219,25 @@ const translations: Record<
     themeDark: "🌙 Oscuro",
     heroTitle: "Hola, soy Guilherme José Gonçalves",
     heroText:
-      "Soy desarrollador full stack con enfoque en .NET y aplicaciones web. Actualmente trabajo en LogX (Narwal Sistemas), usando .NET + PostgreSQL en el back-end y React/Next.js en el front-end. Me gusta construir soluciones simples, bien organizadas y fáciles de evolucionar, con atención a la arquitectura, buenas validaciones y entrega continua (CI/CD).",
+      "Full Stack Developer | .NET, React/Next.js | Arquitectura limpia, APIs escalables y automatización de entregas | DDD, CQRS, Azure DevOps",
     viewProjects: "Ver Proyectos",
     profileAlt: "Foto de Guilherme José Gonçalves",
     aboutTitle: "Sobre mí",
     aboutText:
-      "Trabajo con desarrollo web desde hace algunos años y mi foco es crear software que el equipo pueda mantener y evolucionar con tranquilidad. Tengo experiencia con APIs e integraciones, soporte en producción y mejoras continuas en el flujo de entrega. En el día a día, trabajo en LogX con .NET y PostgreSQL (EF Core, CQRS/MediatR y FluentValidation), y también en el front con React/Next.js usando React Query, Ant Design y Styled Components. Recientemente monté un repositorio interno de documentación orientado al uso con IA para estandarizar decisiones y acelerar el onboarding del equipo.",
+      "Soy Desarrollador Full Stack con enfoque en .NET y productos web escalables, trabajando en la construcción, evolución y sustentación de soluciones con atención a la arquitectura, calidad de código, performance y entrega continua. Tengo experiencia práctica en el desarrollo de APIs y aplicaciones web con .NET, EF Core, React/Next.js, SQL Server, PostgreSQL y MongoDB, aplicando principios como Clean Architecture, DDD y CQRS para orientar decisiones sostenibles y mantener sistemas más evolutivos. También trabajo en la estructuración de pruebas unitarias, end-to-end y de carga, buscando mayor cobertura de reglas de negocio, previsibilidad en cambios y reducción de riesgos en producción. En el ciclo de entrega, trabajo con pipelines de CI/CD en Azure DevOps, automatización de builds y deploys, además de prácticas de code review y apoyo a decisiones arquitectónicas. He utilizado herramientas y agentes de IA, como Claude Code y Codex, para apoyar la estandarización, documentación técnica, revisión de código y productividad en el desarrollo.",
     experienceTitle: "Experiencia",
     hardSkillsTitle: "Hard Skills",
     softSkillsTitle: "Soft Skills",
     experienceItems: [
       {
-        companyPeriod: "LogX (Narwal Sistemas) (2025 – Actual)",
+        companyPeriod: "LogX (dic 2025 – actual)",
         description:
-          "Desarrollador Full Stack con .NET + PostgreSQL y React/Next.js, siguiendo arquitectura por feature, CQRS (MediatR) y validaciones con FluentValidation, entregando soluciones simples (KISS), escalables y fáciles de evolucionar.",
+          "Actúo en el backend con .NET + PostgreSQL y en el frontend con React/Next.js, con foco en arquitectura evolutiva, previsibilidad de entregas y calidad. Entregué features como SSO, Analytics, Audit Log, rebrand de la plataforma, E2E/Load y Webhooks, estandaricé validaciones y flujo de errores con CQRS/MediatR y FluentValidation, apoyé la documentación interna orientada a IA y contribuí a pipelines y releases en Azure DevOps.",
       },
       {
-        companyPeriod: "Narwal Sistemas (2022 – 2025)",
+        companyPeriod: "Narwal Sistemas (jul 2023 – may 2026)",
         description:
-          "Desarrollador Full Stack y Scrum Master, contribuyendo al desarrollo y evolución de soluciones del producto, con foco en entrega continua, calidad y colaboración entre ingeniería y negocio, actuando como referencia técnica y apoyando decisiones de arquitectura.",
+          "Actué como Desarrollador Full Stack y Scrum Master, contribuyendo a la evolución continua de las soluciones del producto con foco en estabilidad, calidad y alineación entre ingeniería y negocio. Participé en la sustentación, evolución funcional y apoyo técnico al equipo, fortaleciendo el flujo de entrega y la colaboración entre áreas.",
       },
       {
         companyPeriod: "Márcio Bikes (2022)",
@@ -253,19 +263,22 @@ const translations: Record<
     ],
     projectsTitle: "Proyectos",
     projectsIntro:
-      "Repositorios públicos de mi GitHub (con algunos destacados alineados con lo que estoy trabajando hoy).",
+      "Proyectos personales y estudios aplicados que utilizo para practicar arquitectura, backend, frontend y diseño de APIs.",
     featuredTitle: "Destacados",
-    otherReposTitle: "Otros repositorios",
+    otherReposTitle: "Otros proyectos personales",
+    personalProjectsLabel: "Proyecto personal",
     noDescription: "Sin descripción.",
     viewOnGithub: "Ver en GitHub",
     blogTitle: "Blog",
-    blogIntro: "Investigaciones y artículos de estudio:",
+    blogIntro: "Artículos y materiales de estudio publicados para consolidar aprendizajes, documentar referencias técnicas y registrar prácticas que aplico en el trabajo diario de ingeniería.",
     blogArticleTitle: "Scrum en la Práctica: Entregando Valor con Agilidad",
     blogArticleText:
-      "Una guía con conceptos, roles, eventos y buenas prácticas para aplicar Scrum de forma objetiva en el día a día.",
+      "Material creado para organizar conceptos, roles, ceremonias y prácticas de Scrum de forma objetiva, conectando teoría con aplicación práctica en equipos de producto e ingeniería.",
+    blogArticleMeta: "Investigación autoral • Agile, Scrum, entrega continua",
     accessResearch: "Acceder a la investigación",
     footerText:
-      "Este es un portafolio personal desarrollado con React + TypeScript usando Vite y Tailwind CSS, alojado en Render. Usado especialmente para aprendizaje y evolución continua.",
+      "Portafolio personal desarrollado para presentar experiencia, proyectos e intereses técnicos con foco en ingeniería de software, arquitectura y mejora continua.",
+    footerLocation: "Criciúma, Santa Catarina, Brasil",
     rightsReserved: "Todos los derechos reservados.",
     fetchError: "Error al buscar repositorios:",
   },
@@ -284,6 +297,81 @@ const projectTags: Record<string, string[]> = {
   "dijkstra-caminho-mais-barato": ["Node", "Algoritmos", "Dijkstra"],
   "site-institucional": ["React", "Node", "Next"],
   "unimotors-springboot-api": ["Spring Boot 3", "Java 17", "PostgreSQL", "Flyway"],
+};
+
+const projectDescriptions: Record<Language, Record<string, string>> = {
+  "pt-br": {
+    "poc-gestao-saude-idosos":
+      "Aplicação focada em gestão de saúde para idosos, com dashboards e visualização de indicadores para apoiar acompanhamento clínico e operacional.",
+    "portfolio-guijosegon":
+      "Meu portfólio pessoal em React, usado para consolidar identidade profissional, apresentar experiência e organizar projetos públicos.",
+    "grpc-agendamento-docker":
+      "Estudo prático de comunicação entre serviços com gRPC e conteinerização, explorando performance, contratos e ambiente reproduzível.",
+    "compilador-didatico-ll1":
+      "Projeto acadêmico para estudo de compiladores e parsing LL(1), com foco em fundamentos de análise sintática.",
+    "agendamento-academia-minimal-api":
+      "API enxuta para agendamento em academia, criada para praticar Minimal APIs, testes e documentação de endpoints.",
+    "api-controle-visitantes":
+      "API REST para controle de visitantes, cobrindo cadastro, fluxo de acesso e persistência com MongoDB.",
+    "app-travels":
+      "Aplicação mobile de estudos para organização de viagens, consumo de APIs e persistência local.",
+    "comparador-sequencial-vs-paralelo":
+      "Experimento comparando processamento sequencial e paralelo em Java, avaliando desempenho e concorrência.",
+    "dijkstra-caminho-mais-barato":
+      "Implementação do algoritmo de Dijkstra para estudo de grafos e cálculo de rotas de menor custo.",
+    "site-institucional":
+      "Projeto web institucional com foco em estruturação de interface, navegação e apresentação de conteúdo.",
+    "unimotors-springboot-api":
+      "API em Spring Boot para gestão de domínio de negócio, praticando modelagem relacional, migrações e arquitetura em camadas.",
+  },
+  "en-en": {
+    "poc-gestao-saude-idosos":
+      "An application focused on elderly healthcare management, with dashboards and indicators to support clinical and operational follow-up.",
+    "portfolio-guijosegon":
+      "My personal React portfolio, built to consolidate professional positioning, present experience, and organize public projects.",
+    "grpc-agendamento-docker":
+      "A practical study of service-to-service communication with gRPC and containerization, exploring performance, contracts, and reproducible environments.",
+    "compilador-didatico-ll1":
+      "An academic project for compiler and LL(1) parsing studies, focused on syntax analysis fundamentals.",
+    "agendamento-academia-minimal-api":
+      "A lean scheduling API for gym scenarios, built to practice Minimal APIs, tests, and endpoint documentation.",
+    "api-controle-visitantes":
+      "A REST API for visitor management, covering registration, access flow, and MongoDB persistence.",
+    "app-travels":
+      "A study-oriented mobile application for trip organization, API consumption, and local persistence.",
+    "comparador-sequencial-vs-paralelo":
+      "An experiment comparing sequential and parallel processing in Java, evaluating performance and concurrency.",
+    "dijkstra-caminho-mais-barato":
+      "An implementation of Dijkstra's algorithm for graph studies and least-cost route calculation.",
+    "site-institucional":
+      "An institutional web project focused on interface structure, navigation, and content presentation.",
+    "unimotors-springboot-api":
+      "A Spring Boot API for business-domain management, practicing relational modeling, migrations, and layered architecture.",
+  },
+  "es-es": {
+    "poc-gestao-saude-idosos":
+      "Aplicación enfocada en la gestión de salud para personas mayores, con dashboards e indicadores para apoyar el seguimiento clínico y operativo.",
+    "portfolio-guijosegon":
+      "Mi portafolio personal en React, creado para consolidar posicionamiento profesional, presentar experiencia y organizar proyectos públicos.",
+    "grpc-agendamento-docker":
+      "Estudio práctico de comunicación entre servicios con gRPC y contenerización, explorando rendimiento, contratos y entornos reproducibles.",
+    "compilador-didatico-ll1":
+      "Proyecto académico para estudiar compiladores y parsing LL(1), con foco en fundamentos de análisis sintáctico.",
+    "agendamento-academia-minimal-api":
+      "API liviana para agendamiento en gimnasio, creada para practicar Minimal APIs, pruebas y documentación de endpoints.",
+    "api-controle-visitantes":
+      "API REST para control de visitantes, cubriendo registro, flujo de acceso y persistencia con MongoDB.",
+    "app-travels":
+      "Aplicación móvil de estudio para organización de viajes, consumo de APIs y persistencia local.",
+    "comparador-sequencial-vs-paralelo":
+      "Experimento comparando procesamiento secuencial y paralelo en Java, evaluando rendimiento y concurrencia.",
+    "dijkstra-caminho-mais-barato":
+      "Implementación del algoritmo de Dijkstra para estudio de grafos y cálculo de rutas de menor costo.",
+    "site-institucional":
+      "Proyecto web institucional con foco en estructura de interfaz, navegación y presentación de contenido.",
+    "unimotors-springboot-api":
+      "API en Spring Boot para gestión de dominio de negocio, practicando modelado relacional, migraciones y arquitectura en capas.",
+  },
 };
 
 const featuredRepoNames = [
@@ -315,7 +403,7 @@ function FloatingSocials() {
         href="https://github.com/guijosegon"
         target="_blank"
         rel="noopener noreferrer"
-        className="bg-gray-800 text-white p-3 rounded-full shadow-lg hover:bg-gray-700 transition"
+        className="bg-zinc-950 text-zinc-200 p-3 rounded-full shadow-lg border border-zinc-800 hover:bg-black transition"
         aria-label="GitHub"
       >
         <FaGithub />
@@ -324,14 +412,14 @@ function FloatingSocials() {
         href="https://www.linkedin.com/in/guilhermejosegon"
         target="_blank"
         rel="noopener noreferrer"
-        className="bg-blue-600 text-white p-3 rounded-full shadow-lg hover:bg-blue-500 transition"
+        className="bg-zinc-950 text-zinc-200 p-3 rounded-full shadow-lg border border-zinc-800 hover:bg-black transition"
         aria-label="LinkedIn"
       >
         <FaLinkedin />
       </a>
       <a
         href="mailto:guilhermejosegon@gmail.com"
-        className="bg-red-600 text-white p-3 rounded-full shadow-lg hover:bg-red-500 transition"
+        className="bg-zinc-950 text-zinc-200 p-3 rounded-full shadow-lg border border-zinc-800 hover:bg-black transition"
         aria-label="Email"
       >
         <FaEnvelope />
@@ -423,14 +511,15 @@ export default function App() {
     0,
     languageOptions.findIndex((option) => option.value === language)
   );
+  const currentProjectDescriptions = projectDescriptions[language];
 
   return (
     <div
       className={`${
-        darkMode ? "bg-gray-900 text-gray-100" : "bg-gray-100 text-gray-900"
+        darkMode ? "bg-black text-zinc-100" : "bg-stone-100 text-gray-900"
       } min-h-screen font-sans`}
     >
-      <header className={`sticky top-0 z-10 ${darkMode ? "bg-gray-800" : "bg-white"} shadow`}>
+      <header className={`sticky top-0 z-10 ${darkMode ? "bg-black/95 border-b border-zinc-900" : "bg-white"} shadow`}>
         <div className="max-w-5xl mx-auto px-6 py-4 flex flex-col md:flex-row md:justify-between md:items-center gap-4">
           <h1 className="text-xl font-semibold text-center md:text-left">{t.portfolio}</h1>
 
@@ -439,7 +528,7 @@ export default function App() {
               <button
                 onClick={() => scrollToId("sobre")}
                 className={`text-xs px-3 h-8 border rounded-full shadow-sm transition ${
-                  darkMode ? "hover:bg-gray-700" : "hover:bg-gray-200"
+                  darkMode ? "border-zinc-800 hover:bg-zinc-950" : "hover:bg-gray-200"
                 }`}
               >
                 {t.navAbout}
@@ -447,7 +536,7 @@ export default function App() {
               <button
                 onClick={() => scrollToId("projetos")}
                 className={`text-xs px-3 h-8 border rounded-full shadow-sm transition ${
-                  darkMode ? "hover:bg-gray-700" : "hover:bg-gray-200"
+                  darkMode ? "border-zinc-800 hover:bg-zinc-950" : "hover:bg-gray-200"
                 }`}
               >
                 {t.navProjects}
@@ -455,7 +544,7 @@ export default function App() {
               <button
                 onClick={() => scrollToId("blog")}
                 className={`text-xs px-3 h-8 border rounded-full shadow-sm transition ${
-                  darkMode ? "hover:bg-gray-700" : "hover:bg-gray-200"
+                  darkMode ? "border-zinc-800 hover:bg-zinc-950" : "hover:bg-gray-200"
                 }`}
               >
                 {t.navBlog}
@@ -465,12 +554,12 @@ export default function App() {
             <div className="flex items-center justify-center md:justify-start gap-2">
               <div
                 className={`relative w-[96px] h-7 rounded-full border overflow-hidden ${
-                  darkMode ? "bg-gray-900 border-gray-700" : "bg-gray-100 border-gray-300"
+                  darkMode ? "bg-zinc-950 border-zinc-800" : "bg-gray-100 border-gray-300"
                 }`}
               >
                 <span
                   className={`absolute top-0.5 h-6 w-1/3 rounded-full shadow-sm transition-transform duration-300 ${
-                    darkMode ? "bg-gray-700" : "bg-white"
+                    darkMode ? "bg-zinc-800" : "bg-white"
                   }`}
                   style={{ transform: `translateX(${selectedLanguageIndex * 100}%)` }}
                   aria-hidden="true"
@@ -487,7 +576,7 @@ export default function App() {
                             ? "text-white"
                             : "text-gray-900"
                           : darkMode
-                          ? "text-gray-400 hover:text-gray-200"
+                          ? "text-zinc-500 hover:text-zinc-200"
                           : "text-gray-500 hover:text-gray-700"
                       }`}
                       aria-label={`Mudar idioma para ${option.label}`}
@@ -501,7 +590,7 @@ export default function App() {
               <button
                 onClick={() => setDarkMode(!darkMode)}
                 className={`text-base w-8 h-8 border rounded-full shadow-sm transition flex items-center justify-center ${
-                  darkMode ? "hover:bg-gray-700" : "hover:bg-gray-200"
+                  darkMode ? "border-zinc-800 hover:bg-zinc-950" : "hover:bg-gray-200"
                 }`}
                 aria-label={darkMode ? t.themeLight : t.themeDark}
               >
@@ -521,13 +610,13 @@ export default function App() {
         >
           <div>
             <h2 className="text-4xl font-bold leading-snug">{t.heroTitle}</h2>
-            <p className="text-lg mt-4">{t.heroText}</p>
+            <p className="text-lg mt-4 max-w-2xl">{t.heroText}</p>
 
             <div className="flex flex-wrap gap-3 mt-6">
               <button
                 onClick={() => scrollToId("projetos")}
                 className={`px-6 py-2 rounded-md transition ${
-                  darkMode ? "bg-black text-white hover:bg-gray-800" : "bg-white text-gray-900 hover:bg-gray-200"
+                  darkMode ? "bg-white text-black hover:bg-zinc-200" : "bg-white text-gray-900 hover:bg-gray-200"
                 }`}
               >
                 {t.viewProjects}
@@ -549,74 +638,82 @@ export default function App() {
 
           <p className="text-base leading-relaxed">{t.aboutText}</p>
 
-          <div className="mt-6 grid grid-cols-1 md:grid-cols-3 gap-4">
+          <div className="mt-8 space-y-6">
             <MotionCard delay={0.1}>
               <div
-                className={`p-4 rounded shadow hover:scale-105 transition-all duration-300 border border-transparent ${
-                  darkMode ? "bg-gray-800 text-gray-100" : "bg-white text-gray-900"
+                className={`p-6 rounded shadow hover:scale-[1.01] transition-all duration-300 border border-transparent ${
+                  darkMode ? "bg-zinc-950 text-zinc-100 border-zinc-900" : "bg-white text-gray-900"
                 }`}
               >
-                <h4 className="flex items-center gap-2 font-semibold mb-4">
-                  <span className="inline-flex items-center justify-center w-6 h-6 bg-blue-600 text-white rounded-full text-sm">
-                    📌
+                <h4 className="flex items-center gap-2 text-xl font-semibold mb-6">
+                  <span className={`inline-flex items-center justify-center w-8 h-8 rounded-full border ${
+                    darkMode ? "border-zinc-800 text-zinc-300" : "border-gray-300 text-gray-700"
+                  }`}>
+                    <FiAward size={16} />
                   </span>
                   {t.experienceTitle}
                 </h4>
 
-                <ul className="text-sm space-y-4">
+                <ul className="space-y-6">
                   {t.experienceItems.map((item) => (
-                    <li key={item.companyPeriod}>
-                      <div className="font-semibold">{item.companyPeriod}</div>
-                      <div className="text-sm">{item.description}</div>
+                    <li key={item.companyPeriod} className="border-b border-zinc-800 pb-6 last:border-b-0 last:pb-0">
+                      <div className="text-lg font-semibold mb-2">{item.companyPeriod}</div>
+                      <div className={`text-sm leading-relaxed md:text-base ${darkMode ? "text-zinc-300" : "text-gray-700"}`}>{item.description}</div>
                     </li>
                   ))}
                 </ul>
               </div>
             </MotionCard>
 
-            <MotionCard delay={0.2}>
-              <div
-                className={`p-4 rounded shadow hover:scale-105 transition-all duration-300 border border-transparent ${
-                  darkMode ? "bg-gray-800 text-gray-100" : "bg-white text-gray-900"
-                }`}
-              >
-                <h4 className="flex items-center gap-2 font-semibold mb-4">
-                  <span className="inline-flex items-center justify-center w-6 h-6 bg-green-600 text-white rounded-full text-sm">
-                    🛠️
-                  </span>
-                  {t.hardSkillsTitle}
-                </h4>
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+              <MotionCard delay={0.2}>
+                <div
+                  className={`p-6 rounded shadow hover:scale-[1.01] transition-all duration-300 border border-transparent h-full ${
+                    darkMode ? "bg-zinc-950 text-zinc-100 border-zinc-900" : "bg-white text-gray-900"
+                  }`}
+                >
+                  <h4 className="flex items-center gap-2 text-xl font-semibold mb-6">
+                    <span className={`inline-flex items-center justify-center w-8 h-8 rounded-full border ${
+                      darkMode ? "border-zinc-800 text-zinc-300" : "border-gray-300 text-gray-700"
+                    }`}>
+                      <FiCode size={16} />
+                    </span>
+                    {t.hardSkillsTitle}
+                  </h4>
 
-                <ul className="text-sm space-y-2">
-                  <li><span className="font-semibold">{t.hardSkillsItems.backend}</span> C#, .NET, ASP.NET Core, EF Core</li>
-                  <li><span className="font-semibold">{t.hardSkillsItems.database}</span> PostgreSQL, SQL Server, MongoDB</li>
-                  <li><span className="font-semibold">{t.hardSkillsItems.frontend}</span> Razor, React, Next.js, React Query, Ant Design, Styled Components, Recharts</li>
-                  <li><span className="font-semibold">{t.hardSkillsItems.architecture}</span> CQRS/MediatR, DDD, FluentValidation, MVC, folder-by-feature, KISS, Clean Code, SOLID</li>
-                  <li><span className="font-semibold">{t.hardSkillsItems.devops}</span> Azure DevOps, Pipelines/Releases, CI/CD, Docker</li>
-                </ul>
-              </div>
-            </MotionCard>
+                  <ul className="text-sm space-y-3 md:text-base">
+                    <li><span className="font-semibold">{t.hardSkillsItems.backend}</span> C#, .NET, ASP.NET Core, EF Core</li>
+                    <li><span className="font-semibold">{t.hardSkillsItems.database}</span> PostgreSQL, SQL Server, MongoDB</li>
+                    <li><span className="font-semibold">{t.hardSkillsItems.frontend}</span> React, Next.js, React Query, Ant Design, Styled Components</li>
+                    <li><span className="font-semibold">{t.hardSkillsItems.architecture}</span> Clean Architecture, DDD, CQRS/MediatR, FluentValidation, APIs escaláveis, Clean Code</li>
+                    <li><span className="font-semibold">{t.hardSkillsItems.devops}</span> Azure DevOps, CI/CD, automação de builds e deploys, testes E2E e carga</li>
+                  </ul>
+                </div>
+              </MotionCard>
 
-            <MotionCard delay={0.3}>
-              <div
-                className={`p-4 rounded shadow hover:scale-105 transition-all duration-300 border border-transparent ${
-                  darkMode ? "bg-gray-800 text-gray-100" : "bg-white text-gray-900"
-                }`}
-              >
-                <h4 className="flex items-center gap-2 font-semibold mb-4">
-                  <span className="inline-flex items-center justify-center w-6 h-6 bg-pink-600 text-white rounded-full text-sm">
-                    🧠
-                  </span>
-                  {t.softSkillsTitle}
-                </h4>
+              <MotionCard delay={0.3}>
+                <div
+                  className={`p-6 rounded shadow hover:scale-[1.01] transition-all duration-300 border border-transparent h-full ${
+                    darkMode ? "bg-zinc-950 text-zinc-100 border-zinc-900" : "bg-white text-gray-900"
+                  }`}
+                >
+                  <h4 className="flex items-center gap-2 text-xl font-semibold mb-6">
+                    <span className={`inline-flex items-center justify-center w-8 h-8 rounded-full border ${
+                      darkMode ? "border-zinc-800 text-zinc-300" : "border-gray-300 text-gray-700"
+                    }`}>
+                      <FiUser size={16} />
+                    </span>
+                    {t.softSkillsTitle}
+                  </h4>
 
-                <ul className="text-sm list-disc list-inside space-y-1">
-                  {t.softSkillsItems.map((item) => (
-                    <li key={item}>{item}</li>
-                  ))}
-                </ul>
-              </div>
-            </MotionCard>
+                  <ul className="text-sm list-disc list-inside space-y-2 md:text-base">
+                    {t.softSkillsItems.map((item) => (
+                      <li key={item}>{item}</li>
+                    ))}
+                  </ul>
+                </div>
+              </MotionCard>
+            </div>
           </div>
         </section>
 
@@ -632,24 +729,30 @@ export default function App() {
                   <MotionCard key={repo.id} delay={index * 0.08}>
                     <div
                       className={`p-4 rounded shadow hover:scale-105 transition-all duration-300 border border-transparent ${
-                        darkMode ? "bg-gray-800 text-gray-100" : "bg-white text-gray-900"
+                        darkMode ? "bg-zinc-950 text-zinc-100 border-zinc-900" : "bg-white text-gray-900"
                       }`}
                     >
+                      <div className={`inline-flex items-center gap-2 text-xs uppercase tracking-[0.18em] mb-3 ${
+                        darkMode ? "text-zinc-500" : "text-gray-500"
+                      }`}>
+                        <FiFolder size={14} />
+                        {t.personalProjectsLabel}
+                      </div>
                       <h5 className="text-lg font-semibold mb-1">{repo.name}</h5>
 
                       {projectTags[repo.name]?.map((tag) => (
                         <span
                           key={tag}
                           className={`text-xs ${
-                            darkMode ? "bg-gray-900 text-gray-200" : "bg-gray-200 text-gray-900"
+                            darkMode ? "bg-black text-zinc-300 border border-zinc-800" : "bg-gray-200 text-gray-900"
                           } px-4 py-0.5 rounded-full mr-2 mb-2 inline-block`}
                         >
                           {tag}
                         </span>
                       ))}
 
-                      <p className={`text-sm ${darkMode ? "text-gray-300" : "text-gray-900"} mb-2`}>
-                        {repo.description || t.noDescription}
+                      <p className={`text-sm ${darkMode ? "text-zinc-300" : "text-gray-700"} mb-2`}>
+                        {currentProjectDescriptions[repo.name] || repo.description || t.noDescription}
                       </p>
 
                       <a
@@ -673,24 +776,30 @@ export default function App() {
               <MotionCard key={repo.id} delay={index * 0.08}>
                 <div
                   className={`p-4 rounded shadow hover:scale-105 transition-all duration-300 border border-transparent ${
-                    darkMode ? "bg-gray-800 text-gray-100" : "bg-white text-gray-900"
+                    darkMode ? "bg-zinc-950 text-zinc-100 border-zinc-900" : "bg-white text-gray-900"
                   }`}
                 >
+                  <div className={`inline-flex items-center gap-2 text-xs uppercase tracking-[0.18em] mb-3 ${
+                    darkMode ? "text-zinc-500" : "text-gray-500"
+                  }`}>
+                    <FiFolder size={14} />
+                    {t.personalProjectsLabel}
+                  </div>
                   <h5 className="text-lg font-semibold mb-1">{repo.name}</h5>
 
                   {projectTags[repo.name]?.map((tag) => (
                     <span
                       key={tag}
                       className={`text-xs ${
-                        darkMode ? "bg-gray-900 text-gray-200" : "bg-gray-200 text-gray-900"
+                        darkMode ? "bg-black text-zinc-300 border border-zinc-800" : "bg-gray-200 text-gray-900"
                       } px-4 py-0.5 rounded-full mr-2 mb-2 inline-block`}
                     >
                       {tag}
                     </span>
                   ))}
 
-                  <p className={`text-sm ${darkMode ? "text-gray-300" : "text-gray-900"} mb-2`}>
-                    {repo.description || t.noDescription}
+                  <p className={`text-sm ${darkMode ? "text-zinc-300" : "text-gray-700"} mb-2`}>
+                    {currentProjectDescriptions[repo.name] || repo.description || t.noDescription}
                   </p>
 
                   <a
@@ -714,11 +823,16 @@ export default function App() {
           <div className="grid gap-4">
             <div
               className={`p-4 rounded shadow hover:scale-105 transition-all duration-300 border border-transparent ${
-                darkMode ? "bg-gray-800 text-gray-100" : "bg-white text-gray-900"
+                darkMode ? "bg-zinc-950 text-zinc-100 border-zinc-900" : "bg-white text-gray-900"
               }`}
             >
+              <div className={`text-xs uppercase tracking-[0.18em] mb-3 ${
+                darkMode ? "text-zinc-500" : "text-gray-500"
+              }`}>
+                {t.blogArticleMeta}
+              </div>
               <h4 className="text-lg font-semibold mb-1">{t.blogArticleTitle}</h4>
-              <p className={`text-sm ${darkMode ? "text-gray-300" : "text-gray-900"} mb-2`}>
+              <p className={`text-sm ${darkMode ? "text-zinc-300" : "text-gray-700"} mb-2`}>
                 {t.blogArticleText}
               </p>
               <a
@@ -736,11 +850,23 @@ export default function App() {
         <FloatingSocials />
       </main>
 
-      <footer className="text-center py-6 text-sm border-t mt-24 border-gray-700">
-        <p className="text-sm text-gray-600 mb-2">
-          {t.footerText}
-        </p>
-        © {new Date().getFullYear()} Guilherme José Gonçalves. {t.rightsReserved}
+      <footer className={`mt-24 border-t ${darkMode ? "border-zinc-900 bg-zinc-950" : "border-gray-300 bg-white/70"}`}>
+        <div className="max-w-5xl mx-auto px-6 py-10 flex flex-col gap-6 md:flex-row md:items-end md:justify-between">
+          <div className="max-w-2xl">
+            <p className={`text-xs uppercase tracking-[0.24em] mb-3 ${darkMode ? "text-zinc-500" : "text-gray-500"}`}>
+              Guilherme Jose Goncalves
+            </p>
+            <p className={`text-sm leading-relaxed md:text-base ${darkMode ? "text-zinc-300" : "text-gray-700"}`}>
+              {t.footerText}
+            </p>
+          </div>
+
+          <div className={`text-sm md:text-right ${darkMode ? "text-zinc-500" : "text-gray-600"}`}>
+            <p>{t.footerLocation}</p>
+            <p>© {new Date().getFullYear()} Guilherme José Gonçalves.</p>
+            <p>{t.rightsReserved}</p>
+          </div>
+        </div>
       </footer>
     </div>
   );
