@@ -1,6 +1,8 @@
 import { useEffect, useMemo, useState } from "react";
+import { BiLogoMicrosoft } from "react-icons/bi";
 import { FaGithub, FaLinkedin, FaEnvelope } from "react-icons/fa";
-import { FiAward, FiCode, FiFolder, FiUser } from "react-icons/fi";
+import { FiArrowRight, FiAward, FiCode, FiFolder, FiUser } from "react-icons/fi";
+import { SiDocker, SiDotnet, SiMongodb, SiNextdotjs, SiPostgresql, SiReact, SiStyledcomponents } from "react-icons/si";
 import { motion } from "framer-motion";
 
 type GithubRepo = {
@@ -15,6 +17,8 @@ type GithubRepo = {
 };
 
 type Language = "pt-br" | "en-en" | "es-es";
+type AboutTab = "experience" | "hard-skills" | "soft-skills";
+type ProjectTab = "featured" | "all";
 
 const translations: Record<
   Language,
@@ -24,17 +28,22 @@ const translations: Record<
     navAbout: string;
     navProjects: string;
     navBlog: string;
+    navContact: string;
     themeLight: string;
     themeDark: string;
     heroTitle: string;
     heroText: string;
+    heroEyebrow: string;
+    heroCtaSecondary: string;
     viewProjects: string;
     profileAlt: string;
     aboutTitle: string;
     aboutText: string;
+    techStackLabel: string;
     experienceTitle: string;
     hardSkillsTitle: string;
     softSkillsTitle: string;
+    tabsLabel: string;
     experienceItems: { companyPeriod: string; description: string }[];
     hardSkillsItems: {
       backend: string;
@@ -49,6 +58,8 @@ const translations: Record<
     featuredTitle: string;
     otherReposTitle: string;
     personalProjectsLabel: string;
+    projectsAsideLabel: string;
+    projectsAsideText: string;
     noDescription: string;
     viewOnGithub: string;
     blogTitle: string;
@@ -57,6 +68,11 @@ const translations: Record<
     blogArticleText: string;
     blogArticleMeta: string;
     accessResearch: string;
+    contactTitle: string;
+    contactIntro: string;
+    contactEmailLabel: string;
+    contactSocialLabel: string;
+    contactEmailCta: string;
     footerText: string;
     footerLocation: string;
     rightsReserved: string;
@@ -69,19 +85,24 @@ const translations: Record<
     navAbout: "Sobre mim",
     navProjects: "Projetos",
     navBlog: "Blog",
+    navContact: "Contato",
     themeLight: "☀️ Claro",
     themeDark: "🌙 Escuro",
     heroTitle: "Olá, eu sou Guilherme José Gonçalves",
     heroText:
       "Full Stack Developer | .NET, React/Next.js | Arquitetura limpa, APIs escaláveis e automação de entregas | DDD, CQRS, Azure DevOps",
+    heroEyebrow: "Engenharia de software com foco em produto, arquitetura e entrega",
+    heroCtaSecondary: "Ir para contato",
     viewProjects: "Ver Projetos",
     profileAlt: "Foto de Guilherme José Gonçalves",
     aboutTitle: "Sobre mim",
     aboutText:
-      "Sou Desenvolvedor Full Stack com foco em .NET e produtos web escaláveis, atuando na construção, evolução e sustentação de soluções com atenção a arquitetura, qualidade de código, performance e entrega contínua. Tenho experiência prática no desenvolvimento de APIs e aplicações web com .NET, EF Core, React/Next.js, SQL Server, PostgreSQL e MongoDB, aplicando princípios como Clean Architecture, DDD e CQRS para orientar decisões sustentáveis e manter sistemas mais evolutivos. Também atuo na estruturação de testes unitários, end-to-end e de carga, buscando maior cobertura das regras de negócio, previsibilidade em mudanças e redução de riscos em produção. No ciclo de entrega, trabalho com pipelines de CI/CD no Azure DevOps, automação de builds e deploys, além de práticas de code review e apoio a decisões arquiteturais. Tenho utilizado ferramentas e agentes de IA, como Claude Code e Codex, para apoiar padronização, documentação técnica, revisão de código e ganho de produtividade no desenvolvimento.",
+      "Sou Desenvolvedor Full Stack com mais de quatro anos de experiência em software, com foco em .NET e produtos web escaláveis. Atuo no desenvolvimento de APIs e aplicações com .NET, EF Core, React/Next.js, SQL Server, PostgreSQL e MongoDB, aplicando princípios como Clean Architecture, DDD e CQRS para manter soluções mais evolutivas. Também trabalho com testes, CI/CD no Azure DevOps, code review e apoio a decisões arquiteturais, além de utilizar ferramentas de IA para documentação técnica, padronização e ganho de produtividade.",
+    techStackLabel: "Tecnologias e práticas",
     experienceTitle: "Experiência",
     hardSkillsTitle: "Hard Skills",
     softSkillsTitle: "Soft Skills",
+    tabsLabel: "Navegação da seção Sobre",
     experienceItems: [
       {
         companyPeriod: "LogX (dez 2025 – atual)",
@@ -121,6 +142,9 @@ const translations: Record<
     featuredTitle: "Destaques",
     otherReposTitle: "Outros projetos pessoais",
     personalProjectsLabel: "Projeto pessoal",
+    projectsAsideLabel: "Curadoria",
+    projectsAsideText:
+      "Os projetos aqui funcionam como laboratório de arquitetura, modelagem de APIs, experiências com frontend e organização de código.",
     noDescription: "Sem descrição.",
     viewOnGithub: "Ver no GitHub",
     blogTitle: "Blog",
@@ -130,6 +154,12 @@ const translations: Record<
       "Material produzido para organizar conceitos, papéis, cerimônias e práticas do Scrum de forma objetiva, conectando teoria com aplicação prática em times de produto e engenharia.",
     blogArticleMeta: "Pesquisa autoral • Agile, Scrum, entrega contínua",
     accessResearch: "Acessar pesquisa",
+    contactTitle: "Contato",
+    contactIntro:
+      "Se quiser conversar sobre oportunidades, produto, arquitetura ou projetos, você pode falar comigo por email ou pelos links profissionais abaixo.",
+    contactEmailLabel: "Email",
+    contactSocialLabel: "Redes profissionais",
+    contactEmailCta: "Enviar email",
     footerText:
       "Portfólio pessoal desenvolvido para apresentar experiência, projetos e interesses técnicos com foco em engenharia de software, arquitetura e evolução contínua.",
     footerLocation: "Criciúma, Santa Catarina, Brasil",
@@ -142,19 +172,24 @@ const translations: Record<
     navAbout: "About me",
     navProjects: "Projects",
     navBlog: "Blog",
+    navContact: "Contact",
     themeLight: "☀️ Light",
     themeDark: "🌙 Dark",
     heroTitle: "Hi, I'm Guilherme José Gonçalves",
     heroText:
       "Full Stack Developer | .NET, React/Next.js | Clean architecture, scalable APIs, and delivery automation | DDD, CQRS, Azure DevOps",
+    heroEyebrow: "Software engineering focused on product, architecture, and delivery",
+    heroCtaSecondary: "Jump to contact",
     viewProjects: "View Projects",
     profileAlt: "Photo of Guilherme José Gonçalves",
     aboutTitle: "About me",
     aboutText:
-      "I am a Full Stack Developer focused on .NET and scalable web products, working across the construction, evolution, and support of solutions with attention to architecture, code quality, performance, and continuous delivery. I have hands-on experience building APIs and web applications with .NET, EF Core, React/Next.js, SQL Server, PostgreSQL, and MongoDB, applying principles such as Clean Architecture, DDD, and CQRS to support sustainable decisions and keep systems easier to evolve. I also work on unit, end-to-end, and load testing to increase business-rule coverage, improve change predictability, and reduce production risks. In the delivery cycle, I work with CI/CD pipelines in Azure DevOps, build and deployment automation, code review practices, and architectural decision support. I have been using AI tools and agents, such as Claude Code and Codex, to help with standardization, technical documentation, code review, and engineering productivity.",
+      "I am a Full Stack Developer with more than four years of experience in software, focused on .NET and scalable web products. I build APIs and web applications with .NET, EF Core, React/Next.js, SQL Server, PostgreSQL, and MongoDB, applying principles such as Clean Architecture, DDD, and CQRS to keep systems easier to evolve. I also work with testing, CI/CD in Azure DevOps, code review, and architectural decision support, while using AI tools to improve technical documentation, standardization, and engineering productivity.",
+    techStackLabel: "Technologies and practices",
     experienceTitle: "Experience",
     hardSkillsTitle: "Hard Skills",
     softSkillsTitle: "Soft Skills",
+    tabsLabel: "About section navigation",
     experienceItems: [
       {
         companyPeriod: "LogX (Dec 2025 – Present)",
@@ -194,6 +229,9 @@ const translations: Record<
     featuredTitle: "Highlights",
     otherReposTitle: "Other personal projects",
     personalProjectsLabel: "Personal project",
+    projectsAsideLabel: "Curation",
+    projectsAsideText:
+      "These projects work as a lab for architecture, API design, frontend experiments, and code organization.",
     noDescription: "No description.",
     viewOnGithub: "View on GitHub",
     blogTitle: "Blog",
@@ -203,6 +241,12 @@ const translations: Record<
       "A material created to organize Scrum concepts, roles, ceremonies, and practices in an objective way, connecting theory with practical application in product and engineering teams.",
     blogArticleMeta: "Original research • Agile, Scrum, continuous delivery",
     accessResearch: "Read research",
+    contactTitle: "Contact",
+    contactIntro:
+      "If you want to talk about opportunities, product, architecture, or projects, you can reach me by email or through the professional links below.",
+    contactEmailLabel: "Email",
+    contactSocialLabel: "Professional links",
+    contactEmailCta: "Send email",
     footerText:
       "Personal portfolio built to present experience, projects, and technical interests with a focus on software engineering, architecture, and continuous improvement.",
     footerLocation: "Criciuma, Santa Catarina, Brazil",
@@ -215,19 +259,24 @@ const translations: Record<
     navAbout: "Sobre mí",
     navProjects: "Proyectos",
     navBlog: "Blog",
+    navContact: "Contacto",
     themeLight: "☀️ Claro",
     themeDark: "🌙 Oscuro",
     heroTitle: "Hola, soy Guilherme José Gonçalves",
     heroText:
       "Full Stack Developer | .NET, React/Next.js | Arquitectura limpia, APIs escalables y automatización de entregas | DDD, CQRS, Azure DevOps",
+    heroEyebrow: "Ingeniería de software con foco en producto, arquitectura y entrega",
+    heroCtaSecondary: "Ir a contacto",
     viewProjects: "Ver Proyectos",
     profileAlt: "Foto de Guilherme José Gonçalves",
     aboutTitle: "Sobre mí",
     aboutText:
-      "Soy Desarrollador Full Stack con enfoque en .NET y productos web escalables, trabajando en la construcción, evolución y sustentación de soluciones con atención a la arquitectura, calidad de código, performance y entrega continua. Tengo experiencia práctica en el desarrollo de APIs y aplicaciones web con .NET, EF Core, React/Next.js, SQL Server, PostgreSQL y MongoDB, aplicando principios como Clean Architecture, DDD y CQRS para orientar decisiones sostenibles y mantener sistemas más evolutivos. También trabajo en la estructuración de pruebas unitarias, end-to-end y de carga, buscando mayor cobertura de reglas de negocio, previsibilidad en cambios y reducción de riesgos en producción. En el ciclo de entrega, trabajo con pipelines de CI/CD en Azure DevOps, automatización de builds y deploys, además de prácticas de code review y apoyo a decisiones arquitectónicas. He utilizado herramientas y agentes de IA, como Claude Code y Codex, para apoyar la estandarización, documentación técnica, revisión de código y productividad en el desarrollo.",
+      "Soy Desarrollador Full Stack con más de cuatro años de experiencia en software, con enfoque en .NET y productos web escalables. Desarrollo APIs y aplicaciones web con .NET, EF Core, React/Next.js, SQL Server, PostgreSQL y MongoDB, aplicando principios como Clean Architecture, DDD y CQRS para mantener soluciones más evolutivas. También trabajo con pruebas, CI/CD en Azure DevOps, code review y apoyo a decisiones arquitectónicas, además de utilizar herramientas de IA para documentación técnica, estandarización y productividad en el desarrollo.",
+    techStackLabel: "Tecnologías y prácticas",
     experienceTitle: "Experiencia",
     hardSkillsTitle: "Hard Skills",
     softSkillsTitle: "Soft Skills",
+    tabsLabel: "Navegación de la sección Sobre",
     experienceItems: [
       {
         companyPeriod: "LogX (dic 2025 – actual)",
@@ -267,6 +316,9 @@ const translations: Record<
     featuredTitle: "Destacados",
     otherReposTitle: "Otros proyectos personales",
     personalProjectsLabel: "Proyecto personal",
+    projectsAsideLabel: "Curaduría",
+    projectsAsideText:
+      "Estos proyectos funcionan como laboratorio de arquitectura, modelado de APIs, experimentos de frontend y organización de código.",
     noDescription: "Sin descripción.",
     viewOnGithub: "Ver en GitHub",
     blogTitle: "Blog",
@@ -276,6 +328,12 @@ const translations: Record<
       "Material creado para organizar conceptos, roles, ceremonias y prácticas de Scrum de forma objetiva, conectando teoría con aplicación práctica en equipos de producto e ingeniería.",
     blogArticleMeta: "Investigación autoral • Agile, Scrum, entrega continua",
     accessResearch: "Acceder a la investigación",
+    contactTitle: "Contacto",
+    contactIntro:
+      "Si quieres hablar sobre oportunidades, producto, arquitectura o proyectos, puedes contactarme por correo o por los enlaces profesionales de abajo.",
+    contactEmailLabel: "Correo",
+    contactSocialLabel: "Redes profesionales",
+    contactEmailCta: "Enviar correo",
     footerText:
       "Portafolio personal desarrollado para presentar experiencia, proyectos e intereses técnicos con foco en ingeniería de software, arquitectura y mejora continua.",
     footerLocation: "Criciúma, Santa Catarina, Brasil",
@@ -379,6 +437,17 @@ const featuredRepoNames = [
   "portfolio-guijosegon",
 ];
 
+const techHighlights = [
+  { icon: SiDotnet, label: "C# / .NET" },
+  { icon: SiReact, label: "React" },
+  { icon: SiNextdotjs, label: "Next.js" },
+  { icon: BiLogoMicrosoft, label: "Azure DevOps / Azure" },
+  { icon: SiPostgresql, label: "PostgreSQL" },
+  { icon: SiMongodb, label: "MongoDB" },
+  { icon: SiDocker, label: "Docker" },
+  { icon: SiStyledcomponents, label: "Styled Components" },
+];
+
 const MotionCard = ({
   children,
   delay = 0,
@@ -431,14 +500,14 @@ function FloatingSocials() {
 export default function App() {
   const [darkMode, setDarkMode] = useState(() => {
     const saved = localStorage.getItem("theme");
-    return saved
-      ? JSON.parse(saved)
-      : window.matchMedia("(prefers-color-scheme: dark)").matches;
+    return saved ? JSON.parse(saved) : true;
   });
   const [language, setLanguage] = useState<Language>(() => {
     const savedLanguage = localStorage.getItem("language") as Language | null;
     return savedLanguage && translations[savedLanguage] ? savedLanguage : "pt-br";
   });
+  const [aboutTab, setAboutTab] = useState<AboutTab>("experience");
+  const [projectTab, setProjectTab] = useState<ProjectTab>("featured");
 
   const [repos, setRepos] = useState<GithubRepo[]>([]);
   const t = translations[language];
@@ -512,6 +581,16 @@ export default function App() {
     languageOptions.findIndex((option) => option.value === language)
   );
   const currentProjectDescriptions = projectDescriptions[language];
+  const aboutTabs: { key: AboutTab; label: string }[] = [
+    { key: "experience", label: t.experienceTitle },
+    { key: "hard-skills", label: t.hardSkillsTitle },
+    { key: "soft-skills", label: t.softSkillsTitle },
+  ];
+  const projectTabs: { key: ProjectTab; label: string }[] = [
+    { key: "featured", label: t.featuredTitle },
+    { key: "all", label: t.otherReposTitle },
+  ];
+  const activeProjectList = projectTab === "featured" ? featuredRepos : nonFeaturedRepos.slice(0, 10);
 
   return (
     <div
@@ -519,156 +598,241 @@ export default function App() {
         darkMode ? "bg-black text-zinc-100" : "bg-stone-100 text-gray-900"
       } min-h-screen font-sans`}
     >
-      <header className={`sticky top-0 z-10 ${darkMode ? "bg-black/95 border-b border-zinc-900" : "bg-white"} shadow`}>
-        <div className="max-w-5xl mx-auto px-6 py-4 flex flex-col md:flex-row md:justify-between md:items-center gap-4">
-          <h1 className="text-xl font-semibold text-center md:text-left">{t.portfolio}</h1>
+      <div className="pointer-events-none fixed inset-0 overflow-hidden">
+        <div className={`absolute -top-24 left-[-10%] h-80 w-80 rounded-full blur-3xl ${darkMode ? "bg-cyan-500/10" : "bg-sky-300/30"}`} />
+        <div className={`absolute top-[28rem] right-[-10%] h-96 w-96 rounded-full blur-3xl ${darkMode ? "bg-indigo-500/10" : "bg-indigo-200/40"}`} />
+      </div>
+      <header className="sticky top-0 z-20 px-4 pt-4">
+        <div
+          className={`max-w-5xl mx-auto rounded-full border shadow-lg backdrop-blur-xl ${
+            darkMode
+              ? "border-zinc-800/80 bg-black/70 shadow-black/30"
+              : "border-white/80 bg-white/80 shadow-gray-200/80"
+          }`}
+        >
+          <div className="px-5 py-3 flex flex-col md:flex-row md:justify-between md:items-center gap-4">
+            <div className="flex items-center justify-center md:justify-start gap-3">
+              <h1 className="text-sm md:text-base font-semibold tracking-[0.18em] uppercase text-center md:text-left">
+                {t.portfolio}
+              </h1>
+            </div>
 
-          <div className="flex flex-col md:flex-row md:items-center gap-3 md:gap-6 text-sm font-medium">
-            <nav className="flex justify-center md:justify-start gap-2 text-center md:text-left">
+            <div className="flex flex-col md:flex-row md:items-center gap-3 md:gap-4 text-sm font-medium">
+              <nav
+                className={`flex flex-wrap justify-center md:justify-start gap-2 text-center md:text-left rounded-full border p-1 ${
+                  darkMode ? "border-zinc-800 bg-zinc-950/70" : "border-gray-200 bg-white/70"
+                }`}
+              >
               <button
                 onClick={() => scrollToId("sobre")}
-                className={`text-xs px-3 h-8 border rounded-full shadow-sm transition ${
-                  darkMode ? "border-zinc-800 hover:bg-zinc-950" : "hover:bg-gray-200"
+                className={`text-xs px-3 h-8 rounded-full transition ${
+                  darkMode ? "text-zinc-300 hover:bg-black hover:text-white" : "hover:bg-gray-200"
                 }`}
               >
                 {t.navAbout}
               </button>
               <button
                 onClick={() => scrollToId("projetos")}
-                className={`text-xs px-3 h-8 border rounded-full shadow-sm transition ${
-                  darkMode ? "border-zinc-800 hover:bg-zinc-950" : "hover:bg-gray-200"
+                className={`text-xs px-3 h-8 rounded-full transition ${
+                  darkMode ? "text-zinc-300 hover:bg-black hover:text-white" : "hover:bg-gray-200"
                 }`}
               >
                 {t.navProjects}
               </button>
               <button
                 onClick={() => scrollToId("blog")}
-                className={`text-xs px-3 h-8 border rounded-full shadow-sm transition ${
-                  darkMode ? "border-zinc-800 hover:bg-zinc-950" : "hover:bg-gray-200"
+                className={`text-xs px-3 h-8 rounded-full transition ${
+                  darkMode ? "text-zinc-300 hover:bg-black hover:text-white" : "hover:bg-gray-200"
                 }`}
               >
                 {t.navBlog}
               </button>
-            </nav>
-
-            <div className="flex items-center justify-center md:justify-start gap-2">
-              <div
-                className={`relative w-[96px] h-7 rounded-full border overflow-hidden ${
-                  darkMode ? "bg-zinc-950 border-zinc-800" : "bg-gray-100 border-gray-300"
-                }`}
-              >
-                <span
-                  className={`absolute top-0.5 h-6 w-1/3 rounded-full shadow-sm transition-transform duration-300 ${
-                    darkMode ? "bg-zinc-800" : "bg-white"
-                  }`}
-                  style={{ transform: `translateX(${selectedLanguageIndex * 100}%)` }}
-                  aria-hidden="true"
-                />
-
-                <div className="relative z-10 grid grid-cols-3 h-full">
-                  {languageOptions.map((option) => (
-                    <button
-                      key={option.value}
-                      onClick={() => setLanguage(option.value)}
-                      className={`text-[11px] uppercase tracking-normal transition ${
-                        language === option.value
-                          ? darkMode
-                            ? "text-white"
-                            : "text-gray-900"
-                          : darkMode
-                          ? "text-zinc-500 hover:text-zinc-200"
-                          : "text-gray-500 hover:text-gray-700"
-                      }`}
-                      aria-label={`Mudar idioma para ${option.label}`}
-                    >
-                      {option.label}
-                    </button>
-                  ))}
-                </div>
-              </div>
-
               <button
-                onClick={() => setDarkMode(!darkMode)}
-                className={`text-base w-8 h-8 border rounded-full shadow-sm transition flex items-center justify-center ${
-                  darkMode ? "border-zinc-800 hover:bg-zinc-950" : "hover:bg-gray-200"
+                onClick={() => scrollToId("contato")}
+                className={`text-xs px-3 h-8 rounded-full transition ${
+                  darkMode ? "text-zinc-300 hover:bg-black hover:text-white" : "hover:bg-gray-200"
                 }`}
-                aria-label={darkMode ? t.themeLight : t.themeDark}
               >
-                {darkMode ? "☀️" : "🌙"}
+                {t.navContact}
               </button>
+              </nav>
+
+              <div className="flex items-center justify-center md:justify-start gap-2">
+                <div
+                  className={`relative w-[96px] h-8 rounded-full border overflow-hidden ${
+                    darkMode ? "bg-zinc-950 border-zinc-800" : "bg-gray-100 border-gray-300"
+                  }`}
+                >
+                  <span
+                    className={`absolute top-0.5 h-7 w-1/3 rounded-full shadow-sm transition-transform duration-300 ${
+                      darkMode ? "bg-zinc-800" : "bg-white"
+                    }`}
+                    style={{ transform: `translateX(${selectedLanguageIndex * 100}%)` }}
+                    aria-hidden="true"
+                  />
+
+                  <div className="relative z-10 grid grid-cols-3 h-full">
+                    {languageOptions.map((option) => (
+                      <button
+                        key={option.value}
+                        onClick={() => setLanguage(option.value)}
+                        className={`text-[11px] uppercase tracking-normal transition ${
+                          language === option.value
+                            ? darkMode
+                              ? "text-white"
+                              : "text-gray-900"
+                            : darkMode
+                            ? "text-zinc-500 hover:text-zinc-200"
+                            : "text-gray-500 hover:text-gray-700"
+                        }`}
+                        aria-label={`Mudar idioma para ${option.label}`}
+                      >
+                        {option.label}
+                      </button>
+                    ))}
+                  </div>
+                </div>
+
+                <button
+                  onClick={() => setDarkMode(!darkMode)}
+                  className={`text-base w-8 h-8 border rounded-full transition flex items-center justify-center ${
+                    darkMode ? "border-zinc-800 bg-zinc-950 text-zinc-200 hover:bg-black" : "hover:bg-gray-200"
+                  }`}
+                  aria-label={darkMode ? t.themeLight : t.themeDark}
+                >
+                  {darkMode ? "☀️" : "🌙"}
+                </button>
+              </div>
             </div>
           </div>
         </div>
       </header>
 
-      <main className="px-6 py-16 max-w-5xl mx-auto">
+      <main className="relative px-6 py-16 max-w-5xl mx-auto">
         <motion.section
-          className="grid md:grid-cols-2 gap-10 items-center"
+          className={`relative overflow-hidden rounded-[2rem] border px-8 py-10 md:px-10 md:py-12 ${
+            darkMode
+              ? "border-zinc-900 bg-[radial-gradient(circle_at_top_left,_rgba(34,211,238,0.18),_transparent_28%),linear-gradient(135deg,#050505_10%,#0b1220_55%,#050505_100%)]"
+              : "border-white/70 bg-[radial-gradient(circle_at_top_left,_rgba(125,211,252,0.45),_transparent_30%),linear-gradient(135deg,#ffffff_10%,#e0f2fe_55%,#f5f5f4_100%)]"
+          }`}
           initial={{ opacity: 0, y: -30 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.5 }}
         >
-          <div>
-            <h2 className="text-4xl font-bold leading-snug">{t.heroTitle}</h2>
-            <p className="text-lg mt-4 max-w-2xl">{t.heroText}</p>
-
-            <div className="flex flex-wrap gap-3 mt-6">
-              <button
-                onClick={() => scrollToId("projetos")}
-                className={`px-6 py-2 rounded-md transition ${
-                  darkMode ? "bg-white text-black hover:bg-zinc-200" : "bg-white text-gray-900 hover:bg-gray-200"
-                }`}
-              >
-                {t.viewProjects}
-              </button>
-            </div>
+          <div className="absolute inset-0 opacity-40">
+            <div className={`absolute -right-12 top-10 h-40 w-40 rounded-full blur-2xl ${darkMode ? "bg-cyan-400/20" : "bg-sky-300/50"}`} />
+            <div className={`absolute bottom-0 left-1/3 h-32 w-32 rounded-full blur-2xl ${darkMode ? "bg-indigo-400/20" : "bg-indigo-200/50"}`} />
           </div>
 
-          <div className="flex justify-center">
-            <img
-              src="/perfil.png"
-              alt={t.profileAlt}
-              className="w-56 h-56 rounded-full object-cover"
-            />
+          <div className="relative grid md:grid-cols-[1.3fr_0.7fr] gap-10 items-center">
+            <div>
+              <p className={`text-xs uppercase tracking-[0.28em] ${darkMode ? "text-cyan-200/70" : "text-sky-700"}`}>
+                {t.heroEyebrow}
+              </p>
+              <h2 className="text-4xl md:text-5xl font-bold leading-tight mt-4">{t.heroTitle}</h2>
+              <p className={`text-lg mt-5 max-w-2xl ${darkMode ? "text-zinc-300" : "text-gray-700"}`}>{t.heroText}</p>
+
+              <div className="flex flex-wrap gap-3 mt-8">
+                <button
+                  onClick={() => scrollToId("projetos")}
+                  className={`px-6 py-3 rounded-full transition inline-flex items-center gap-2 ${
+                    darkMode ? "bg-white text-black hover:bg-zinc-200" : "bg-black text-white hover:bg-gray-800"
+                  }`}
+                >
+                  {t.viewProjects}
+                  <FiArrowRight size={16} />
+                </button>
+                <button
+                  onClick={() => scrollToId("contato")}
+                  className={`px-6 py-3 rounded-full border transition ${
+                    darkMode ? "border-zinc-700 text-zinc-100 hover:bg-zinc-950" : "border-gray-300 hover:bg-white/80"
+                  }`}
+                >
+                  {t.heroCtaSecondary}
+                </button>
+              </div>
+            </div>
+
+            <div className="flex justify-center">
+              <div className={`relative rounded-[2rem] border p-3 backdrop-blur ${
+                darkMode ? "border-zinc-800 bg-black/40" : "border-white/80 bg-white/70"
+              }`}>
+                <div className={`absolute inset-0 rounded-[2rem] ${darkMode ? "bg-gradient-to-b from-white/5 to-transparent" : "bg-gradient-to-b from-white/60 to-transparent"}`} />
+                <img
+                  src="/perfil.png"
+                  alt={t.profileAlt}
+                  className="relative w-56 h-56 md:w-72 md:h-72 rounded-[1.5rem] object-cover"
+                />
+              </div>
+            </div>
           </div>
         </motion.section>
 
         <section id="sobre" className="mt-24">
-          <h3 className="text-2xl font-bold mb-4">{t.aboutTitle}</h3>
+          <div className="grid gap-8 lg:grid-cols-[0.7fr_1.3fr] lg:items-start">
+            <div>
+              <p className={`text-xs uppercase tracking-[0.28em] ${darkMode ? "text-zinc-500" : "text-gray-500"}`}>
+                {t.aboutTitle}
+              </p>
+              <h3 className="text-3xl font-bold mt-3 mb-4">{t.aboutTitle}</h3>
+              <p className={`text-base leading-relaxed ${darkMode ? "text-zinc-300" : "text-gray-700"}`}>{t.aboutText}</p>
+              <div className="mt-6">
+                <p className={`text-xs uppercase tracking-[0.18em] mb-3 ${darkMode ? "text-zinc-500" : "text-gray-500"}`}>
+                  {t.techStackLabel}
+                </p>
+                <div className="grid grid-cols-4 gap-x-6 gap-y-5 max-w-md">
+                  {techHighlights.map((item) => {
+                    const Icon = item.icon;
 
-          <p className="text-base leading-relaxed">{t.aboutText}</p>
+                    return (
+                      <div
+                        key={item.label}
+                        title={item.label}
+                        aria-label={item.label}
+                        className={`flex items-center justify-center ${
+                          darkMode ? "text-zinc-300" : "text-gray-700"
+                        }`}
+                      >
+                        <Icon className={darkMode ? "text-zinc-100" : "text-gray-900"} size={28} />
+                      </div>
+                    );
+                  })}
+                </div>
+              </div>
+            </div>
 
-          <div className="mt-8 space-y-6">
-            <MotionCard delay={0.1}>
+            <div className="space-y-5">
               <div
-                className={`p-6 rounded shadow hover:scale-[1.01] transition-all duration-300 border border-transparent ${
-                  darkMode ? "bg-zinc-950 text-zinc-100 border-zinc-900" : "bg-white text-gray-900"
+                role="tablist"
+                aria-label={t.tabsLabel}
+                className={`inline-flex flex-wrap gap-2 rounded-full border p-1 ${
+                  darkMode ? "border-zinc-800 bg-zinc-950" : "border-gray-200 bg-white"
                 }`}
               >
-                <h4 className="flex items-center gap-2 text-xl font-semibold mb-6">
-                  <span className={`inline-flex items-center justify-center w-8 h-8 rounded-full border ${
-                    darkMode ? "border-zinc-800 text-zinc-300" : "border-gray-300 text-gray-700"
-                  }`}>
-                    <FiAward size={16} />
-                  </span>
-                  {t.experienceTitle}
-                </h4>
-
-                <ul className="space-y-6">
-                  {t.experienceItems.map((item) => (
-                    <li key={item.companyPeriod} className="border-b border-zinc-800 pb-6 last:border-b-0 last:pb-0">
-                      <div className="text-lg font-semibold mb-2">{item.companyPeriod}</div>
-                      <div className={`text-sm leading-relaxed md:text-base ${darkMode ? "text-zinc-300" : "text-gray-700"}`}>{item.description}</div>
-                    </li>
-                  ))}
-                </ul>
+                {aboutTabs.map((tab) => (
+                  <button
+                    key={tab.key}
+                    role="tab"
+                    aria-selected={aboutTab === tab.key}
+                    onClick={() => setAboutTab(tab.key)}
+                    className={`rounded-full px-4 py-2 text-sm transition ${
+                      aboutTab === tab.key
+                        ? darkMode
+                          ? "bg-white text-black"
+                          : "bg-black text-white"
+                        : darkMode
+                        ? "text-zinc-400 hover:bg-black hover:text-zinc-100"
+                        : "text-gray-600 hover:bg-stone-100"
+                    }`}
+                  >
+                    {tab.label}
+                  </button>
+                ))}
               </div>
-            </MotionCard>
 
-            <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-              <MotionCard delay={0.2}>
+              <MotionCard delay={0.1}>
                 <div
-                  className={`p-6 rounded shadow hover:scale-[1.01] transition-all duration-300 border border-transparent h-full ${
+                  className={`rounded-[1.75rem] border p-6 md:p-8 ${
                     darkMode ? "bg-zinc-950 text-zinc-100 border-zinc-900" : "bg-white text-gray-900"
                   }`}
                 >
@@ -676,41 +840,59 @@ export default function App() {
                     <span className={`inline-flex items-center justify-center w-8 h-8 rounded-full border ${
                       darkMode ? "border-zinc-800 text-zinc-300" : "border-gray-300 text-gray-700"
                     }`}>
-                      <FiCode size={16} />
+                      {aboutTab === "experience" ? <FiAward size={16} /> : aboutTab === "hard-skills" ? <FiCode size={16} /> : <FiUser size={16} />}
                     </span>
-                    {t.hardSkillsTitle}
+                    {aboutTabs.find((tab) => tab.key === aboutTab)?.label}
                   </h4>
 
-                  <ul className="text-sm space-y-3 md:text-base">
-                    <li><span className="font-semibold">{t.hardSkillsItems.backend}</span> C#, .NET, ASP.NET Core, EF Core</li>
-                    <li><span className="font-semibold">{t.hardSkillsItems.database}</span> PostgreSQL, SQL Server, MongoDB</li>
-                    <li><span className="font-semibold">{t.hardSkillsItems.frontend}</span> React, Next.js, React Query, Ant Design, Styled Components</li>
-                    <li><span className="font-semibold">{t.hardSkillsItems.architecture}</span> Clean Architecture, DDD, CQRS/MediatR, FluentValidation, APIs escaláveis, Clean Code</li>
-                    <li><span className="font-semibold">{t.hardSkillsItems.devops}</span> Azure DevOps, CI/CD, automação de builds e deploys, testes E2E e carga</li>
-                  </ul>
-                </div>
-              </MotionCard>
+                  {aboutTab === "experience" && (
+                    <ul className="space-y-6">
+                      {t.experienceItems.map((item) => (
+                        <li key={item.companyPeriod} className="border-b border-zinc-800 pb-6 last:border-b-0 last:pb-0">
+                          <div className="text-lg font-semibold mb-2">{item.companyPeriod}</div>
+                          <div className={`text-sm leading-relaxed md:text-base ${darkMode ? "text-zinc-300" : "text-gray-700"}`}>{item.description}</div>
+                        </li>
+                      ))}
+                    </ul>
+                  )}
 
-              <MotionCard delay={0.3}>
-                <div
-                  className={`p-6 rounded shadow hover:scale-[1.01] transition-all duration-300 border border-transparent h-full ${
-                    darkMode ? "bg-zinc-950 text-zinc-100 border-zinc-900" : "bg-white text-gray-900"
-                  }`}
-                >
-                  <h4 className="flex items-center gap-2 text-xl font-semibold mb-6">
-                    <span className={`inline-flex items-center justify-center w-8 h-8 rounded-full border ${
-                      darkMode ? "border-zinc-800 text-zinc-300" : "border-gray-300 text-gray-700"
-                    }`}>
-                      <FiUser size={16} />
-                    </span>
-                    {t.softSkillsTitle}
-                  </h4>
+                  {aboutTab === "hard-skills" && (
+                    <div className="grid gap-3 md:grid-cols-2">
+                      <div className={`rounded-2xl border p-4 ${darkMode ? "border-zinc-800 bg-black/25" : "border-gray-200 bg-stone-50"}`}>
+                        <p className="font-semibold mb-2">{t.hardSkillsItems.backend}</p>
+                        <p className={darkMode ? "text-zinc-300" : "text-gray-700"}>C#, .NET, ASP.NET Core, EF Core</p>
+                      </div>
+                      <div className={`rounded-2xl border p-4 ${darkMode ? "border-zinc-800 bg-black/25" : "border-gray-200 bg-stone-50"}`}>
+                        <p className="font-semibold mb-2">{t.hardSkillsItems.database}</p>
+                        <p className={darkMode ? "text-zinc-300" : "text-gray-700"}>PostgreSQL, SQL Server, MongoDB</p>
+                      </div>
+                      <div className={`rounded-2xl border p-4 ${darkMode ? "border-zinc-800 bg-black/25" : "border-gray-200 bg-stone-50"}`}>
+                        <p className="font-semibold mb-2">{t.hardSkillsItems.frontend}</p>
+                        <p className={darkMode ? "text-zinc-300" : "text-gray-700"}>React, Next.js, React Query, Ant Design, Styled Components</p>
+                      </div>
+                      <div className={`rounded-2xl border p-4 ${darkMode ? "border-zinc-800 bg-black/25" : "border-gray-200 bg-stone-50"}`}>
+                        <p className="font-semibold mb-2">{t.hardSkillsItems.architecture}</p>
+                        <p className={darkMode ? "text-zinc-300" : "text-gray-700"}>Clean Architecture, DDD, CQRS/MediatR, FluentValidation, APIs escaláveis</p>
+                      </div>
+                      <div className={`rounded-2xl border p-4 md:col-span-2 ${darkMode ? "border-zinc-800 bg-black/25" : "border-gray-200 bg-stone-50"}`}>
+                        <p className="font-semibold mb-2">{t.hardSkillsItems.devops}</p>
+                        <p className={darkMode ? "text-zinc-300" : "text-gray-700"}>Azure DevOps, CI/CD, automação de builds e deploys, testes E2E e carga</p>
+                      </div>
+                    </div>
+                  )}
 
-                  <ul className="text-sm list-disc list-inside space-y-2 md:text-base">
-                    {t.softSkillsItems.map((item) => (
-                      <li key={item}>{item}</li>
-                    ))}
-                  </ul>
+                  {aboutTab === "soft-skills" && (
+                    <div className="grid gap-3 md:grid-cols-2">
+                      {t.softSkillsItems.map((item) => (
+                        <div
+                          key={item}
+                          className={`rounded-2xl border px-4 py-3 ${darkMode ? "border-zinc-800 bg-black/25 text-zinc-300" : "border-gray-200 bg-stone-50 text-gray-700"}`}
+                        >
+                          {item}
+                        </div>
+                      ))}
+                    </div>
+                  )}
                 </div>
               </MotionCard>
             </div>
@@ -718,65 +900,53 @@ export default function App() {
         </section>
 
         <section id="projetos" className="mt-24">
-          <h3 className="text-2xl font-bold mb-2">{t.projectsTitle}</h3>
-          <p className="mb-6">{t.projectsIntro}</p>
+          <div className="grid gap-8 lg:grid-cols-[0.8fr_1.2fr]">
+            <div>
+              <p className={`text-xs uppercase tracking-[0.28em] ${darkMode ? "text-zinc-500" : "text-gray-500"}`}>
+                {t.personalProjectsLabel}
+              </p>
+              <h3 className="text-3xl font-bold mt-3 mb-3">{t.projectsTitle}</h3>
+              <p className={`mb-6 ${darkMode ? "text-zinc-300" : "text-gray-700"}`}>{t.projectsIntro}</p>
 
-          {featuredRepos.length > 0 && (
-            <>
-              <h4 className="text-lg font-semibold mb-3">{t.featuredTitle}</h4>
-              <div className="grid gap-4 mb-10">
-                {featuredRepos.map((repo, index) => (
-                  <MotionCard key={repo.id} delay={index * 0.08}>
-                    <div
-                      className={`p-4 rounded shadow hover:scale-105 transition-all duration-300 border border-transparent ${
-                        darkMode ? "bg-zinc-950 text-zinc-100 border-zinc-900" : "bg-white text-gray-900"
-                      }`}
-                    >
-                      <div className={`inline-flex items-center gap-2 text-xs uppercase tracking-[0.18em] mb-3 ${
-                        darkMode ? "text-zinc-500" : "text-gray-500"
-                      }`}>
-                        <FiFolder size={14} />
-                        {t.personalProjectsLabel}
-                      </div>
-                      <h5 className="text-lg font-semibold mb-1">{repo.name}</h5>
+              <div className={`rounded-[1.75rem] border p-6 ${darkMode ? "border-zinc-900 bg-zinc-950" : "border-gray-200 bg-white"}`}>
+                <div className={`text-xs uppercase tracking-[0.18em] mb-3 ${darkMode ? "text-zinc-500" : "text-gray-500"}`}>
+                  {t.projectsAsideLabel}
+                </div>
+                <p className={`text-base leading-relaxed ${darkMode ? "text-zinc-300" : "text-gray-700"}`}>
+                  {t.projectsAsideText}
+                </p>
+              </div>
+            </div>
 
-                      {projectTags[repo.name]?.map((tag) => (
-                        <span
-                          key={tag}
-                          className={`text-xs ${
-                            darkMode ? "bg-black text-zinc-300 border border-zinc-800" : "bg-gray-200 text-gray-900"
-                          } px-4 py-0.5 rounded-full mr-2 mb-2 inline-block`}
-                        >
-                          {tag}
-                        </span>
-                      ))}
-
-                      <p className={`text-sm ${darkMode ? "text-zinc-300" : "text-gray-700"} mb-2`}>
-                        {currentProjectDescriptions[repo.name] || repo.description || t.noDescription}
-                      </p>
-
-                      <a
-                        href={repo.html_url}
-                        target="_blank"
-                        rel="noopener noreferrer"
-                        className="text-blue-600 dark:text-blue-400 text-sm underline"
-                      >
-                        {t.viewOnGithub}
-                      </a>
-                    </div>
-                  </MotionCard>
+            <div>
+              <div className={`inline-flex flex-wrap gap-2 rounded-full border p-1 mb-6 ${
+                darkMode ? "border-zinc-800 bg-zinc-950" : "border-gray-200 bg-white"
+              }`}>
+                {projectTabs.map((tab) => (
+                  <button
+                    key={tab.key}
+                    onClick={() => setProjectTab(tab.key)}
+                    className={`rounded-full px-4 py-2 text-sm transition ${
+                      projectTab === tab.key
+                        ? darkMode
+                          ? "bg-white text-black"
+                          : "bg-black text-white"
+                        : darkMode
+                        ? "text-zinc-400 hover:bg-black hover:text-zinc-100"
+                        : "text-gray-600 hover:bg-stone-100"
+                    }`}
+                  >
+                    {tab.label}
+                  </button>
                 ))}
               </div>
-            </>
-          )}
 
-          <h4 className="text-lg font-semibold mb-3">{t.otherReposTitle}</h4>
-          <div className="grid gap-4">
-            {nonFeaturedRepos.slice(0, 10).map((repo, index) => (
+              <div className="grid gap-4">
+            {activeProjectList.map((repo, index) => (
               <MotionCard key={repo.id} delay={index * 0.08}>
                 <div
-                  className={`p-4 rounded shadow hover:scale-105 transition-all duration-300 border border-transparent ${
-                    darkMode ? "bg-zinc-950 text-zinc-100 border-zinc-900" : "bg-white text-gray-900"
+                  className={`rounded-[1.5rem] border p-5 transition duration-300 hover:-translate-y-1 ${
+                    darkMode ? "bg-zinc-950 text-zinc-100 border-zinc-900 hover:border-zinc-700" : "bg-white text-gray-900 hover:border-gray-300"
                   }`}
                 >
                   <div className={`inline-flex items-center gap-2 text-xs uppercase tracking-[0.18em] mb-3 ${
@@ -787,18 +957,20 @@ export default function App() {
                   </div>
                   <h5 className="text-lg font-semibold mb-1">{repo.name}</h5>
 
-                  {projectTags[repo.name]?.map((tag) => (
-                    <span
-                      key={tag}
-                      className={`text-xs ${
-                        darkMode ? "bg-black text-zinc-300 border border-zinc-800" : "bg-gray-200 text-gray-900"
-                      } px-4 py-0.5 rounded-full mr-2 mb-2 inline-block`}
-                    >
-                      {tag}
-                    </span>
-                  ))}
+                  <div className="mb-3">
+                    {projectTags[repo.name]?.map((tag) => (
+                      <span
+                        key={tag}
+                        className={`text-xs ${
+                          darkMode ? "bg-black text-zinc-300 border border-zinc-800" : "bg-gray-200 text-gray-900"
+                        } px-4 py-0.5 rounded-full mr-2 mb-2 inline-block`}
+                      >
+                        {tag}
+                      </span>
+                    ))}
+                  </div>
 
-                  <p className={`text-sm ${darkMode ? "text-zinc-300" : "text-gray-700"} mb-2`}>
+                  <p className={`text-sm leading-relaxed ${darkMode ? "text-zinc-300" : "text-gray-700"} mb-4`}>
                     {currentProjectDescriptions[repo.name] || repo.description || t.noDescription}
                   </p>
 
@@ -806,43 +978,133 @@ export default function App() {
                     href={repo.html_url}
                     target="_blank"
                     rel="noopener noreferrer"
-                    className="text-blue-600 dark:text-blue-400 text-sm underline"
+                    className={`text-sm underline ${
+                      darkMode ? "text-cyan-300" : "text-sky-700"
+                    }`}
                   >
                     {t.viewOnGithub}
                   </a>
                 </div>
               </MotionCard>
             ))}
+              </div>
+            </div>
           </div>
         </section>
 
         <section id="blog" className="mt-24">
-          <h3 className="text-2xl font-bold mb-4">{t.blogTitle}</h3>
-          <p className="mb-6">{t.blogIntro}</p>
-
-          <div className="grid gap-4">
-            <div
-              className={`p-4 rounded shadow hover:scale-105 transition-all duration-300 border border-transparent ${
-                darkMode ? "bg-zinc-950 text-zinc-100 border-zinc-900" : "bg-white text-gray-900"
-              }`}
-            >
-              <div className={`text-xs uppercase tracking-[0.18em] mb-3 ${
-                darkMode ? "text-zinc-500" : "text-gray-500"
-              }`}>
-                {t.blogArticleMeta}
+          <div className={`rounded-[2rem] border p-8 md:p-10 ${
+            darkMode
+              ? "border-zinc-900 bg-[linear-gradient(135deg,#060606_0%,#101827_100%)]"
+              : "border-gray-200 bg-[linear-gradient(135deg,#ffffff_0%,#eef6ff_100%)]"
+          }`}>
+            <div className="grid gap-8 md:grid-cols-[0.75fr_1.25fr] md:items-start">
+              <div>
+                <p className={`text-xs uppercase tracking-[0.28em] ${darkMode ? "text-zinc-500" : "text-gray-500"}`}>
+                  {t.blogTitle}
+                </p>
+                <h3 className="text-3xl font-bold mt-3 mb-4">{t.blogTitle}</h3>
+                <p className={`${darkMode ? "text-zinc-300" : "text-gray-700"}`}>{t.blogIntro}</p>
               </div>
-              <h4 className="text-lg font-semibold mb-1">{t.blogArticleTitle}</h4>
-              <p className={`text-sm ${darkMode ? "text-zinc-300" : "text-gray-700"} mb-2`}>
-                {t.blogArticleText}
-              </p>
-              <a
-                href="https://github.com/guijosegon/GuiaCompletoScrum"
-                target="_blank"
-                rel="noopener noreferrer"
-                className="text-blue-600 text-sm underline"
+
+              <div
+                className={`rounded-[1.5rem] border p-6 md:p-7 ${
+                  darkMode ? "border-zinc-800 bg-black/35" : "border-white/70 bg-white/75"
+                }`}
               >
-                {t.accessResearch}
-              </a>
+                <div className={`text-xs uppercase tracking-[0.18em] mb-3 ${
+                  darkMode ? "text-zinc-500" : "text-gray-500"
+                }`}>
+                  {t.blogArticleMeta}
+                </div>
+                <h4 className="text-xl font-semibold mb-3">{t.blogArticleTitle}</h4>
+                <p className={`text-sm md:text-base leading-relaxed ${darkMode ? "text-zinc-300" : "text-gray-700"} mb-5`}>
+                  {t.blogArticleText}
+                </p>
+                <a
+                  href="https://github.com/guijosegon/GuiaCompletoScrum"
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className={`inline-flex items-center gap-2 text-sm ${
+                    darkMode ? "text-cyan-300" : "text-sky-700"
+                  }`}
+                >
+                  {t.accessResearch}
+                  <FiArrowRight size={15} />
+                </a>
+              </div>
+            </div>
+          </div>
+        </section>
+
+        <section id="contato" className="mt-24">
+          <div className={`rounded-[2rem] border p-8 md:p-10 ${
+            darkMode
+              ? "border-zinc-900 bg-[radial-gradient(circle_at_top_left,_rgba(34,211,238,0.12),_transparent_25%),#050505]"
+              : "border-gray-200 bg-[radial-gradient(circle_at_top_left,_rgba(125,211,252,0.25),_transparent_25%),#ffffff]"
+          }`}>
+            <div className="grid gap-8 md:grid-cols-[1fr_0.9fr] md:items-start">
+              <div>
+                <p className={`text-xs uppercase tracking-[0.28em] ${darkMode ? "text-zinc-500" : "text-gray-500"}`}>
+                  {t.contactTitle}
+                </p>
+                <h3 className="text-3xl font-bold mt-3 mb-4">{t.contactTitle}</h3>
+                <p className={`max-w-2xl text-base leading-relaxed ${darkMode ? "text-zinc-300" : "text-gray-700"}`}>
+                  {t.contactIntro}
+                </p>
+              </div>
+
+              <div className="grid gap-4">
+                <div className={`rounded-[1.5rem] border p-5 ${
+                  darkMode ? "border-zinc-800 bg-zinc-950" : "border-gray-200 bg-white"
+                }`}>
+                  <p className={`text-xs uppercase tracking-[0.18em] mb-3 ${darkMode ? "text-zinc-500" : "text-gray-500"}`}>
+                    {t.contactEmailLabel}
+                  </p>
+                  <p className="text-lg font-semibold break-all">guilhermejosegon@gmail.com</p>
+                  <a
+                    href="mailto:guilhermejosegon@gmail.com"
+                    className={`inline-flex items-center gap-2 mt-4 text-sm ${
+                      darkMode ? "text-cyan-300" : "text-sky-700"
+                    }`}
+                  >
+                    {t.contactEmailCta}
+                    <FiArrowRight size={15} />
+                  </a>
+                </div>
+
+                <div className={`rounded-[1.5rem] border p-5 ${
+                  darkMode ? "border-zinc-800 bg-zinc-950" : "border-gray-200 bg-white"
+                }`}>
+                  <p className={`text-xs uppercase tracking-[0.18em] mb-4 ${darkMode ? "text-zinc-500" : "text-gray-500"}`}>
+                    {t.contactSocialLabel}
+                  </p>
+                  <div className="flex flex-wrap gap-3">
+                    <a
+                      href="https://github.com/guijosegon"
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      className={`inline-flex items-center gap-2 rounded-full border px-4 py-2 text-sm transition ${
+                        darkMode ? "border-zinc-700 text-zinc-200 hover:bg-black" : "border-gray-300 text-gray-700 hover:bg-stone-50"
+                      }`}
+                    >
+                      <FaGithub />
+                      GitHub
+                    </a>
+                    <a
+                      href="https://www.linkedin.com/in/guilhermejosegon"
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      className={`inline-flex items-center gap-2 rounded-full border px-4 py-2 text-sm transition ${
+                        darkMode ? "border-zinc-700 text-zinc-200 hover:bg-black" : "border-gray-300 text-gray-700 hover:bg-stone-50"
+                      }`}
+                    >
+                      <FaLinkedin />
+                      LinkedIn
+                    </a>
+                  </div>
+                </div>
+              </div>
             </div>
           </div>
         </section>
@@ -850,22 +1112,11 @@ export default function App() {
         <FloatingSocials />
       </main>
 
-      <footer className={`mt-24 border-t ${darkMode ? "border-zinc-900 bg-zinc-950" : "border-gray-300 bg-white/70"}`}>
-        <div className="max-w-5xl mx-auto px-6 py-10 flex flex-col gap-6 md:flex-row md:items-end md:justify-between">
-          <div className="max-w-2xl">
-            <p className={`text-xs uppercase tracking-[0.24em] mb-3 ${darkMode ? "text-zinc-500" : "text-gray-500"}`}>
-              Guilherme Jose Goncalves
-            </p>
-            <p className={`text-sm leading-relaxed md:text-base ${darkMode ? "text-zinc-300" : "text-gray-700"}`}>
-              {t.footerText}
-            </p>
-          </div>
-
-          <div className={`text-sm md:text-right ${darkMode ? "text-zinc-500" : "text-gray-600"}`}>
-            <p>{t.footerLocation}</p>
-            <p>© {new Date().getFullYear()} Guilherme José Gonçalves.</p>
-            <p>{t.rightsReserved}</p>
-          </div>
+      <footer className={`mt-16 border-t ${darkMode ? "border-zinc-950 bg-black" : "border-gray-200 bg-stone-100/80"}`}>
+        <div className="max-w-5xl mx-auto px-6 py-6">
+          <p className={`text-xs text-center ${darkMode ? "text-zinc-600" : "text-gray-500"}`}>
+            © {new Date().getFullYear()} Guilherme José Gonçalves. {t.rightsReserved}
+          </p>
         </div>
       </footer>
     </div>
